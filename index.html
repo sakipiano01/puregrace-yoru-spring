@@ -1,0 +1,489 @@
+<!DOCTYPE html>
+
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0">
+<title>Quiet Grace  みおの1日 〜よるのじかん・春編〜</title>
+<style>
+* { box-sizing: border-box; }
+body {
+    margin: 0;
+    font-family: "Hiragino Mincho ProN", "Yu Mincho", serif;
+    background: linear-gradient(160deg, #e8c8d8 0%, #d0a8c8 50%, #b890b8 100%);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    padding: 16px;
+    transition: background 2s ease;
+}
+.game-container {
+    width: 100%;
+    max-width: 400px;
+    background: rgba(255,255,255,0.06);
+    backdrop-filter: blur(12px);
+    padding: 24px 20px;
+    border-radius: 20px;
+    border: 1px solid rgba(255,255,255,0.1);
+    box-shadow: 0 20px 60px rgba(0,0,0,0.4), inset 0 1px 0 rgba(255,255,255,0.1);
+    position: relative;
+    z-index: 1;
+}
+h1 {
+    font-size: 15px;
+    text-align: center;
+    margin: 0 0 4px 0;
+    color: rgba(60,40,60,0.8);
+    letter-spacing: 0.1em;
+    font-weight: normal;
+    transition: color 2s ease;
+}
+.subtitle {
+    font-size: 11px;
+    text-align: center;
+    color: rgba(60,40,60,0.6);
+    letter-spacing: 0.15em;
+    margin-bottom: 18px;
+    transition: color 2s ease;
+}
+.scene-label {
+    font-size: 11px;
+    color: rgba(230,180,210,0.7);
+    text-align: center;
+    margin-bottom: 10px;
+    letter-spacing: 0.1em;
+    min-height: 16px;
+}
+.scene-image {
+    width: 65%;
+    display: block;
+    margin: 0 auto 16px auto;
+    border-radius: 14px;
+    opacity: 0;
+    animation: fadeIn 1.5s ease forwards;
+    box-shadow: 0 8px 24px rgba(0,0,0,0.3);
+}
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+.text {
+    min-height: 90px;
+    margin-bottom: 18px;
+    line-height: 1.85;
+    font-size: 14px;
+    color: rgba(255,255,255,0.82);
+    opacity: 0;
+    animation: fadeText 1.2s ease forwards;
+    animation-delay: 0.4s;
+    text-align: justify;
+}
+@keyframes fadeText {
+    from { opacity: 0; transform: translateY(5px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+button {
+    width: 100%;
+    padding: 12px 14px;
+    margin-bottom: 8px;
+    border: 1px solid rgba(255,255,255,0.15);
+    border-radius: 10px;
+    background: rgba(255,255,255,0.07);
+    font-size: 13px;
+    color: rgba(255,255,255,0.8);
+    cursor: pointer;
+    font-family: "Hiragino Mincho ProN","Yu Mincho",serif;
+    letter-spacing: 0.04em;
+    line-height: 1.5;
+    text-align: left;
+    transition: background 0.2s ease, border-color 0.2s ease;
+}
+button:hover { background: rgba(255,255,255,0.13); border-color: rgba(230,180,210,0.5); }
+.status { margin-top: 18px; }
+.status-row { display: flex; align-items: center; margin-bottom: 7px; gap: 10px; }
+.status-label { width: 78px; font-size: 11px; color: rgba(255,255,255,0.45); flex-shrink: 0; letter-spacing: 0.05em; }
+.status-bar-bg { flex: 1; height: 6px; background: rgba(255,255,255,0.08); border-radius: 3px; overflow: hidden; }
+.status-bar-fill { height: 100%; border-radius: 3px; transition: width 0.6s ease; }
+.grace-fill { background: linear-gradient(to right, #e8a8c8, #f0c8dc); }
+.stress-fill { background: linear-gradient(to right, #8ab0a0, #a0c8b0); }
+.shop-message { font-size: 13px; color: rgba(255,255,255,0.55); text-align: center; margin: 14px 0 10px 0; line-height: 1.8; }
+.shop-button {
+    width: 100%; padding: 13px; margin-bottom: 8px;
+    border: 1px solid rgba(230,180,210,0.5); border-radius: 10px;
+    background: rgba(200,140,180,0.15); font-size: 13px;
+    color: rgba(240,210,230,0.9); cursor: pointer; letter-spacing: 0.08em;
+    font-family: "Hiragino Mincho ProN","Yu Mincho",serif; transition: background 0.2s ease;
+}
+.shop-button:hover { background: rgba(200,140,180,0.28); }
+.stars { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; overflow:hidden; z-index:0; }
+.star {
+    position: absolute; width: 2px; height: 2px; background: white; border-radius: 50%; opacity: 0;
+    animation: twinkle var(--duration) ease-in-out infinite; animation-delay: var(--delay);
+}
+@keyframes twinkle { 0%,100%{opacity:0} 50%{opacity:var(--opacity)} }
+.petals { position: fixed; top:0; left:0; width:100%; height:100%; pointer-events:none; overflow:hidden; z-index:0; }
+.petal {
+    position: absolute;
+    width: var(--size);
+    height: calc(var(--size) * 0.65);
+    background: radial-gradient(ellipse at 40% 40%, #fde8ef, #f0b8cc);
+    border-radius: 50% 50% 50% 50% / 60% 60% 40% 40%;
+    opacity: 0;
+    animation: petalFall var(--fall-duration) ease-in infinite;
+    animation-delay: var(--fall-delay);
+    top: -20px;
+    left: var(--left);
+}
+@keyframes petalFall {
+    0%   { opacity: 0; transform: translateY(0px) rotate(0deg) translateX(0px); }
+    10%  { opacity: 0.65; }
+    80%  { opacity: 0.4; }
+    100% { opacity: 0; transform: translateY(100vh) rotate(var(--spin)) translateX(var(--drift)); }
+}
+#musicHint {
+    font-size: 10px;
+    color: rgba(60,40,60,0.5);
+    text-align: center;
+    margin-top: 10px;
+    letter-spacing: 0.08em;
+    transition: color 2s ease;
+}
+</style>
+</head>
+<body>
+<div class="stars" id="stars"></div>
+<div class="petals" id="petals"></div>
+<div class="game-container">
+    <h1 id="gameTitle">Quiet Grace</h1>
+    <div class="subtitle" id="gameSubtitle">みおの1日 〜よるのじかん・春編〜</div>
+    <div class="scene-label" id="sceneLabel"></div>
+    <div class="text" id="story"></div>
+    <div id="choices"></div>
+    <div class="status">
+        <div class="status-row">
+            <span class="status-label">🌸 やすらぎ</span>
+            <div class="status-bar-bg"><div class="status-bar-fill grace-fill" id="graceBar" style="width:50%"></div></div>
+        </div>
+        <div class="status-row">
+            <span class="status-label">🍃 つかれ</span>
+            <div class="status-bar-bg"><div class="status-bar-fill stress-fill" id="stressBar" style="width:30%"></div></div>
+        </div>
+    </div>
+    <div id="musicHint">♪ 選択肢を選ぶと音楽が始まります</div>
+</div>
+<script>
+(function() {
+    const starsEl = document.getElementById("stars");
+    for (let i = 0; i < 60; i++) {
+        const star = document.createElement("div");
+        star.className = "star";
+        star.style.left = Math.random() * 100 + "%";
+        star.style.top = Math.random() * 100 + "%";
+        star.style.setProperty("--duration", (2 + Math.random() * 4) + "s");
+        star.style.setProperty("--delay", (Math.random() * 4) + "s");
+        star.style.setProperty("--opacity", (0.2 + Math.random() * 0.5).toString());
+        starsEl.appendChild(star);
+    }
+})();
+
+(function() {
+const petalsEl = document.getElementById(“petals”);
+for (let i = 0; i < 18; i++) {
+const petal = document.createElement(“div”);
+petal.className = “petal”;
+const size = (6 + Math.random() * 7) + “px”;
+petal.style.setProperty(”–size”, size);
+petal.style.setProperty(”–left”, (Math.random() * 110 - 5) + “%”);
+petal.style.setProperty(”–fall-duration”, (6 + Math.random() * 8) + “s”);
+petal.style.setProperty(”–fall-delay”, (Math.random() * 10) + “s”);
+petal.style.setProperty(”–spin”, (Math.random() * 720 - 360) + “deg”);
+petal.style.setProperty(”–drift”, (Math.random() * 80 - 40) + “px”);
+petalsEl.appendChild(petal);
+}
+})();
+
+const sceneBgs = [
+“linear-gradient(160deg, #e8c8d8 0%, #d0a8c8 50%, #b890b8 100%)”,
+“linear-gradient(160deg, #c8a0c0 0%, #b088b0 50%, #9878a0 100%)”,
+“linear-gradient(160deg, #a080a8 0%, #886898 50%, #705888 100%)”,
+“linear-gradient(160deg, #786090 0%, #645080 50%, #504070 100%)”,
+“linear-gradient(160deg, #483860 0%, #3c3058 50%, #302848 100%)”,
+“linear-gradient(160deg, #2e2448 0%, #3a2e58 50%, #2c2440 100%)”,
+];
+
+function updateBg(sceneIndex) {
+document.body.style.background = sceneBgs[Math.min(sceneIndex, sceneBgs.length - 1)];
+const isDark = sceneIndex >= 2;
+document.getElementById(“gameTitle”).style.color = isDark ? “rgba(255,255,255,0.55)” : “rgba(60,40,60,0.8)”;
+document.getElementById(“gameSubtitle”).style.color = isDark ? “rgba(255,255,255,0.35)” : “rgba(60,40,60,0.6)”;
+const hint = document.getElementById(“musicHint”);
+if (hint) hint.style.color = isDark ? “rgba(255,255,255,0.3)” : “rgba(60,40,60,0.5)”;
+}
+
+let audioCtx = null;
+let musicStarted = false;
+
+function startMusic() {
+if (musicStarted) return;
+musicStarted = true;
+audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+const hint = document.getElementById(“musicHint”);
+if (hint) hint.style.display = “none”;
+
+```
+const masterGain = audioCtx.createGain();
+masterGain.gain.setValueAtTime(0, audioCtx.currentTime);
+masterGain.gain.linearRampToValueAtTime(0.18, audioCtx.currentTime + 3);
+masterGain.connect(audioCtx.destination);
+
+// オルゴール用リバーブ（箱の中の小さな残響）
+const convLen = audioCtx.sampleRate * 1.5;
+const convBuf = audioCtx.createBuffer(2, convLen, audioCtx.sampleRate);
+for (let ch = 0; ch < 2; ch++) {
+    const d = convBuf.getChannelData(ch);
+    for (let i = 0; i < convLen; i++) d[i] = (Math.random() * 2 - 1) * Math.pow(1 - i / convLen, 4.0);
+}
+const reverb = audioCtx.createConvolver();
+reverb.buffer = convBuf;
+const reverbGain = audioCtx.createGain();
+reverbGain.gain.value = 0.45;
+reverb.connect(reverbGain); reverbGain.connect(masterGain);
+
+const lpf = audioCtx.createBiquadFilter();
+lpf.type = "lowpass"; lpf.frequency.value = 5500; lpf.Q.value = 0.4;
+lpf.connect(masterGain);
+lpf.connect(reverb);
+
+// オルゴール音：sine + 高次倍音少し、鋭いアタック→すっと消える
+function playBox(freq, time, vol) {
+    const osc1 = audioCtx.createOscillator();
+    const osc2 = audioCtx.createOscillator();
+    const osc3 = audioCtx.createOscillator();
+    const env = audioCtx.createGain();
+    osc1.type = "sine"; osc1.frequency.value = freq;
+    osc2.type = "sine"; osc2.frequency.value = freq * 2;   // 2倍音（明るさ）
+    osc3.type = "sine"; osc3.frequency.value = freq * 3;   // 3倍音（少しだけ）
+    const m2 = audioCtx.createGain(); m2.gain.value = 0.18;
+    const m3 = audioCtx.createGain(); m3.gain.value = 0.05;
+    osc1.connect(env); osc2.connect(m2); m2.connect(env); osc3.connect(m3); m3.connect(env);
+    env.gain.setValueAtTime(vol, time);                          // 即アタック
+    env.gain.exponentialRampToValueAtTime(vol * 0.3, time + 0.08);
+    env.gain.exponentialRampToValueAtTime(0.001, time + 1.2);   // ゆっくり減衰
+    env.connect(lpf);
+    osc1.start(time); osc2.start(time); osc3.start(time);
+    osc1.stop(time + 1.3); osc2.stop(time + 1.3); osc3.stop(time + 1.3);
+}
+
+// キック（軽いティック音・控えめ）
+function playKick(time) {
+    const osc = audioCtx.createOscillator();
+    const env = audioCtx.createGain();
+    osc.type = "sine";
+    osc.frequency.setValueAtTime(120, time);
+    osc.frequency.exponentialRampToValueAtTime(50, time + 0.1);
+    env.gain.setValueAtTime(0.18, time);
+    env.gain.exponentialRampToValueAtTime(0.001, time + 0.18);
+    osc.connect(env); env.connect(masterGain);
+    osc.start(time); osc.stop(time + 0.2);
+}
+
+// スネア（やさしいノイズ）
+function playSnare(time) {
+    const buf = audioCtx.createBuffer(1, audioCtx.sampleRate * 0.12, audioCtx.sampleRate);
+    const data = buf.getChannelData(0);
+    for (let i = 0; i < data.length; i++) data[i] = (Math.random() * 2 - 1) * (1 - i / data.length) * 0.3;
+    const src = audioCtx.createBufferSource();
+    const hpf = audioCtx.createBiquadFilter();
+    hpf.type = "highpass"; hpf.frequency.value = 800;
+    const env = audioCtx.createGain();
+    env.gain.setValueAtTime(0.10, time);
+    env.gain.exponentialRampToValueAtTime(0.001, time + 0.12);
+    src.buffer = buf; src.connect(hpf); hpf.connect(env); env.connect(masterGain);
+    src.start(time);
+}
+
+const bpm = 80;
+const beat = 60 / bpm;
+
+// キラキラ音（ランダムなウィンドチャイム風）
+(function() {
+    // Cメジャーペンタトニックの高音域
+    const sparkFreqs = [1046.50, 1174.66, 1318.51, 1396.91, 1567.98, 2093.00, 2349.32];
+    function playSparkle(time, freq) {
+        const osc1 = audioCtx.createOscillator();
+        const osc2 = audioCtx.createOscillator();
+        const env = audioCtx.createGain();
+        osc1.type = "sine"; osc1.frequency.value = freq;
+        osc2.type = "sine"; osc2.frequency.value = freq * 2.756; // 倍音少しずらしてチャイムらしさ
+        const m2 = audioCtx.createGain(); m2.gain.value = 0.12;
+        osc1.connect(env); osc2.connect(m2); m2.connect(env);
+        env.gain.setValueAtTime(0.004, time);
+        env.gain.exponentialRampToValueAtTime(0.001, time + 2.2);
+        env.connect(lpf);
+        env.connect(reverb);
+        osc1.start(time); osc2.start(time);
+        osc1.stop(time + 2.4); osc2.stop(time + 2.4);
+    }
+    function scheduleSparkles() {
+        if (!audioCtx) return;
+        const now = audioCtx.currentTime;
+        // 2〜5秒のランダム間隔で1〜3音まとめてきらめく
+        const count = Math.floor(Math.random() * 3) + 1;
+        for (let i = 0; i < count; i++) {
+            const offset = i * (0.08 + Math.random() * 0.18);
+            const freq = sparkFreqs[Math.floor(Math.random() * sparkFreqs.length)];
+            playSparkle(now + offset, freq);
+        }
+        const next = 2000 + Math.random() * 3500;
+        setTimeout(scheduleSparkles, next);
+    }
+    setTimeout(scheduleSparkles, 1500);
+})();
+
+// メロディ：Cメジャー・春らしい明るい旋律
+// ド→ミ→ソ→ラ→ソ→ミ→ド 系のシンプルで歌えるライン
+const melody = [
+    [0,           523.25, 0.10],  // ド（高）
+    [beat*1,      493.88, 0.09],  // シ
+    [beat*2,      440.00, 0.10],  // ラ
+    [beat*3,      392.00, 0.09],  // ソ
+    [beat*4,      440.00, 0.10],  // ラ
+    [beat*5,      493.88, 0.09],  // シ
+    [beat*6,      523.25, 0.10],  // ド（高）
+    [beat*7.5,    587.33, 0.09],  // レ（高）
+    [beat*8,      523.25, 0.10],  // ド（高）
+    [beat*9,      440.00, 0.09],  // ラ
+    [beat*10,     392.00, 0.08],  // ソ
+    [beat*11,     440.00, 0.09],  // ラ
+    [beat*12,     392.00, 0.10],  // ソ
+    [beat*13,     349.23, 0.09],  // ファ
+    [beat*14,     392.00, 0.10],  // ソ
+    [beat*15,     261.63, 0.08],  // ド（低・締め）
+];
+
+// 伴奏：Cメジャー系の分散和音
+const accomp = [
+    [beat*0,   261.63, 0.06],  // ド
+    [beat*1,   329.63, 0.05],  // ミ
+    [beat*2,   392.00, 0.05],  // ソ
+    [beat*4,   220.00, 0.06],  // ラ低
+    [beat*5,   261.63, 0.05],  // ド
+    [beat*6,   329.63, 0.05],  // ミ
+    [beat*8,   174.61, 0.06],  // ファ低
+    [beat*9,   220.00, 0.05],  // ラ低
+    [beat*10,  261.63, 0.05],  // ド
+    [beat*12,  196.00, 0.06],  // ソ低
+    [beat*13,  246.94, 0.05],  // シ低
+    [beat*14,  293.66, 0.05],  // レ
+];
+
+const loopDuration = beat * 16;
+
+function scheduleLoop(startTime) {
+    melody.forEach(([offset, freq, vol]) => playBox(freq, startTime + offset, vol));
+    accomp.forEach(([offset, freq, vol]) => playBox(freq, startTime + offset, vol));
+    // リズム：控えめに
+    for (let step = 0; step < 16; step++) {
+        const t = startTime + step * beat;
+        if (step % 8 === 0) playKick(t);
+        if (step % 4 === 2) playSnare(t);
+    }
+    const msDelay = (startTime + loopDuration - audioCtx.currentTime - 0.5) * 1000;
+    setTimeout(() => { if (audioCtx) scheduleLoop(audioCtx.currentTime + 0.5); }, Math.max(msDelay, 100));
+}
+scheduleLoop(audioCtx.currentTime + 0.5);
+```
+
+}
+
+let grace = 50, stress = 30, scene = 0;
+const story = document.getElementById(“story”);
+const choices = document.getElementById(“choices”);
+const sceneLabel = document.getElementById(“sceneLabel”);
+const sceneLabels = [“🌸 帰り道”,“🏠 帰宅”,“🛁 お風呂”,“🍵 夜の時間”,“📖 寝る前”,“🌙 おやすみ”];
+
+function updateStatus() {
+document.getElementById(“graceBar”).style.width = Math.min(Math.max(grace,0),100)+”%”;
+document.getElementById(“stressBar”).style.width = Math.min(Math.max(stress,0),100)+”%”;
+}
+
+function nextScene() {
+story.style.animation = “none”;
+story.offsetHeight;
+story.style.animation = null;
+choices.innerHTML = “”;
+sceneLabel.innerHTML = sceneLabels[scene] || “”;
+updateBg(scene);
+
+```
+if (scene===0) {
+    story.innerHTML = "<img src='images/mio_evening.png' class='scene-image'>桜が散りはじめた4月の夜。帰り道、風がふわりと花びらを運んでくる。昼間のあたたかさが嘘みたいに、夜はまだすこし冷える。今日もいろんなことがあった。気持ちをどこかに置いてきたい。";
+    createChoice("🎵 好きな音楽をかけて、今日のことを手放す", 8, -6);
+    createChoice("🌸 花びらを眺めながら、ゆっくり歩く", 5, 2);
+} else if (scene===1) {
+    story.innerHTML = "<img src='images/mio_home.png' class='scene-image'>玄関を開けると、静かな部屋。外から持ち込んだ花粉と冷たさを、まず脱ぎ捨てる。ふわりとやわらかい部屋着に袖を通した瞬間、少しだけ呼吸が深くなった気がした。春の夜、ほっとできる場所がここにある。";
+    createChoice("🫧 まずお風呂でしっかり温まる", 8, -6);
+    createChoice("🛋 少しだけ休んでから、ゆっくり動く", 4, -2);
+} else if (scene===2) {
+    story.innerHTML = "<img src='images/mio_bath.png' class='scene-image'>湯船につかると、今日の疲れがじわじわとほどけていく。春は寒暖差がはげしい。体は思ったより、がんばっていた。芯まで温まると、不思議と今日のことを責める気持ちが薄れてくる。";
+    createChoice("🌿 考えるのをやめて、ただ温まる", 10, -8);
+    createChoice("💭 静かに、自分と向き合ってみる", 6, 2);
+} else if (scene===3) {
+    story.innerHTML = "<img src='images/mio_tea.png' class='scene-image'>お風呂上がり、急いで服を着る。春でも湯冷めは油断できない。好きなカップに温かいものを注いで、ソファに座る。窓の外、夜桜がほんのり見える。スマホの通知が2件。この静かな時間を、何に使おう。";
+    createChoice("📵 通知を閉じて、夜桜をぼんやり眺める", 10, -6);
+    createChoice("📱 気になって、つい開いてしまう", -5, 8);
+} else if (scene===4) {
+    story.innerHTML = "<img src='images/mio_book.png' class='scene-image'>スキンケアをしながら、今日一日を思い返す。春は肌もゆらぎやすい。いつもより丁寧に、やさしく触れる。うまくいかなかったこともあった。でも桜はただきれいだった。眠る前のこの時間だけは、自分をいたわることにしている。";
+    createChoice("🌸 今日のちいさなよかったことを、心に留める", 10, -5);
+    createChoice("📝 明日もっとうまくやろう、と自分に言い聞かせる", -4, 8);
+} else if (scene===5) {
+    story.innerHTML = "<img src='images/mio_sleep.png' class='scene-image'>電気を消す。やわらかい素材が肌を包んでいる。春の夜風が、窓の隙間からかすかに入ってくる。みおはふと思う。「自分を大切にするって、どういうことだろう」。答えはまだわからないけれど、今夜の選択が、少しずつ教えてくれる気がした。";
+    createChoice("🌙 答えを出さないまま、目を閉じる", 10, -8);
+    createChoice("✨ 明日の自分に、そっと委ねる", 8, -6);
+} else {
+    ending();
+}
+updateStatus();
+```
+
+}
+
+function createChoice(text, graceChange, stressChange) {
+const button = document.createElement(“button”);
+button.innerText = text;
+button.onclick = function() {
+startMusic();
+grace += graceChange;
+stress += stressChange;
+scene++;
+nextScene();
+};
+choices.appendChild(button);
+}
+
+function ending() {
+sceneLabel.innerHTML = “✨ おやすみなさい”;
+let endingHTML = “”, shopMessage = “”;
+if (grace>=75 && stress<=35) {
+endingHTML = “<img src='images/ending_goodnight.png' class='scene-image'>🌸 やさしい春の夜<br><br>みおは今夜、自分をとても大切にした。<br>布団の中が、やわらかく温かい。<br>窓の外で、桜がまだ散っている。<br>おやすみなさい、みお。よく眠れますように。”;
+shopMessage = “春の夜、自分をやさしく扱えますように。Pure Grace のアイテムを。”;
+} else if (grace>=55 && stress<=55) {
+endingHTML = “<img src='images/ending_quiet.png' class='scene-image'>🌿 静かな春の夜<br><br>少し揺れながらも、みおは自分のペースを守った。<br>完璧じゃなくていい。<br>春はまだ続く。今夜のみおは、じゅうぶんだ。”;
+shopMessage = “揺れながらも、自分でいられるあなたへ。”;
+} else {
+endingHTML = “<img src='images/ending_tired.png' class='scene-image'>🌸 疲れた春の夜<br><br>今日は少し、自分より外を優先してしまった。<br>でも桜はちゃんと咲いていた。<br>明日がある。今夜はただ、眠ればいい。”;
+shopMessage = “疲れた夜のあなたに、ほっとできる春の一枚を。”;
+}
+story.innerHTML = endingHTML;
+choices.innerHTML =
+“<p class='shop-message'>”+shopMessage+”</p>” +
+“<button class=‘shop-button’ onclick="window.open(‘https://puregrace.shopselect.net/items/all’,’_blank’)">今夜のみおに寄り添うアイテムを見てみる</button>” +
+“<button onclick='location.reload()'>もう一度プレイ</button>”;
+}
+
+nextScene();
+</script>
+
+</body>
+</html>
